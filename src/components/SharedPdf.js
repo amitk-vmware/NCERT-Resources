@@ -1,42 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
-import PDFView from 'react-native-pdf';
+import React from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
+import {Themes} from './Theme';
 
-const SharedPDF = ({ fileUrl }) => {
-  const [pdfSource, setPdfSource] = useState(null);
+const {buttonBackgroundColor, buttonTextColor} = Themes.default;
 
-  useEffect(() => {
-    const fetchPDF = async () => {
-      try {
-        const response = await RNFetchBlob.config({
-          fileCache: true,
-          appendExt: 'pdf',
-        }).fetch('GET', fileUrl);
-        console.log(response, 'response');
-        const localFilePath = response.path();
-        setPdfSource({ uri: `file://${localFilePath}` });
-      } catch (error) {
-        console.log('Error fetching PDF:', error);
-      }
+const Download = () => {
+  const downloadFile = () => {
+    let FILE_URL =
+      'https://ipfs.filebase.io/ipfs/QmYAy7Ff5vZr6WUxVUaq78i3cgycmyeY2FCEZVEKtJvfL4';
+    let file_ext = getFileExtention(FILE_URL);
+    console.log(file_ext, 'file_ext');
+    file_ext = '.' + 'pdf';
+    const {config, fs} = RNFetchBlob;
+    let RootDir = fs.dirs.DownloadDir;
+
+    
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        path: `${RootDir}/file_${file_ext}`,
+        description: 'downloading file...',
+        notification: true,
+        useDownloadManager: true,
+      },
     };
+    config(options)
+      .fetch('GET', FILE_URL)
+      .then(res => {
+        console.log('res -> ', JSON.stringify(res));
+        alert('File Downloaded Successfully.');
+      });
+  };
 
-    fetchPDF();
-  }, [fileUrl]);
+  const getFileExtention = fileUrl => {
+    return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
+  };
 
+  const {button, textStyle} = styles;
   return (
-    <View style={{ flex: 1 }}>
-      {pdfSource && (
-        <PDFView
-          style={{ flex: 1 }}
-          source={pdfSource}
-          resourceType="file"
-          onLoad={() => console.log('PDF loaded')}
-          onError={(error) => console.log('Error while loading PDF:', error)}
-        />
-      )}
+    <View>
+      <TouchableOpacity style={button} onPress={downloadFile}>
+        <Text style={textStyle}>{'Download'}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default SharedPDF;
+export default Download;
+
+const styles = StyleSheet.create({
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: buttonBackgroundColor,
+    elevation: 5,
+    color: 'blue',
+    borderRadius: 5,
+    width: 80,
+    height: 50,
+  },
+  textStyle: {
+    color: buttonTextColor,
+  },
+});

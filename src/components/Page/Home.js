@@ -32,11 +32,11 @@ const Home = ({navigation}) => {
         customButtonStyles={customButtonStyles}
         onClick={() => onClick(BOOKS)}
       />
-      {/* <Button
+      <Button
         text={'NCERT BOOKS SOLUTIONS'}
         customButtonStyles={customButtonStyles}
         onClick={() => onClick(SOLUTIONS)}
-      /> */}
+      />
       <Ads />
     </View>
   );

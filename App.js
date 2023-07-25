@@ -2,16 +2,17 @@ import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Pages from './src/components/Pages';
-import SharedPDF from './src/components/SharedPdf';
+import 'react-native-gesture-handler';
 
 const App = () => {
-  const {container, button, buttonText} = styles;
+  const {container} = styles;
   return (
     <NavigationContainer>
       <SafeAreaView style={container}>
         <Pages />
       </SafeAreaView>
     </NavigationContainer>
+    // <SharedPDF />
   );
 };
 

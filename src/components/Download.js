@@ -2,15 +2,15 @@ import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Themes} from './Theme';
+import {SOLUTIONS} from './reference';
 
 const {buttonBackgroundColor, buttonTextColor} = Themes.default;
 
-const Download = ({uri, book, chapter, text, customButtonStyle}) => {
+const Download = ({uri, book, chapter, text, customButtonStyle, type}) => {
   const downloadFile = () => {
-    console.log('hello');
-    let FILE_URL = uri;
-    // let file_ext = getFileExtention(FILE_URL);
-    let file_ext = '.' + 'pdf';
+    // let FILE_URL = uri;
+    let file_ext = setExtension();
+    // file_ext = '.' + file_ext[0];
     const {config, fs} = RNFetchBlob;
     let RootDir = fs.dirs.DownloadDir;
 
@@ -27,15 +27,28 @@ const Download = ({uri, book, chapter, text, customButtonStyle}) => {
       },
     };
     config(options)
-      .fetch('GET', FILE_URL)
+      .fetch('GET', uri)
       .then(res => {
         console.log('res -> ', JSON.stringify(res));
         alert('File Downloaded Successfully.');
       });
   };
 
+  const setExtension = () => {
+    let ext;
+    switch (type) {
+      case SOLUTIONS:
+        ext = '_solution.pdf';
+        break;
+      default:
+        ext = getFileExtention(uri);
+        ext = '.' + ext[0];
+    }
+    return ext;
+  };
+
   const getFileExtention = fileUrl => {
-    return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : '';
+    return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
   };
 
   const {button, textStyle} = styles;

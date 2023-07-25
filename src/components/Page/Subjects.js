@@ -4,18 +4,31 @@ import {View, FlatList, StyleSheet} from 'react-native';
 import {titleCase} from '../utils';
 import Ads from '../Ads';
 import {Themes} from '../Theme';
+import {SOLUTIONS} from '../reference';
 
 const {bodyBackgroundColor} = Themes.default;
 
 const Subjects = ({route, navigation}) => {
   const data = route.params.item;
   const subjects = data.subjects;
+  const type = route.params.type;
+
   const onClick = subject => {
     navigation.navigate('BOOKS', {
       subject: subject,
       data,
-      type: route.params.type,
+      type,
+      title: title(),
     });
+  };
+
+  const title = () => {
+    switch (type) {
+      case SOLUTIONS:
+        return 'BOOKS (SOLUTION)';
+      default:
+        return 'BOOKS';
+    }
   };
 
   const renderItem = ({item}) => (

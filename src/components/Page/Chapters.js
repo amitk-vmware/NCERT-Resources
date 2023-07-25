@@ -5,7 +5,8 @@ import Download from '../Download';
 import {NCERT_HOST} from '../reference';
 import ItemSeparator from '../List/ItemSeparator';
 import {Themes} from '../Theme';
-import {SOLUTIONS} from '../reference';
+import Ads from '../Ads';
+import {SOLUTIONS, SOLUTIONS_HOST} from '../reference';
 
 const {bodyBackgroundColor} = Themes.default;
 
@@ -28,13 +29,14 @@ const Chapters = ({route, navigation}) => {
     let uri;
     switch (type) {
       case SOLUTIONS:
-        uri = `${data[`${book}_solutions`][item]}`;
+        uri = `${SOLUTIONS_HOST}/${data[`${book}_solutions`][item]}`;
         break;
       default:
         uri = `${NCERT_HOST}/${data[`${book}_pdf_key`]}${
           chapter < 10 ? `0${chapter}` : chapter
         }.pdf`;
     }
+
     return (
       <View style={viewStyle}>
         <Text style={textStyle}>{`CHAPTER ${chapter}`}</Text>
@@ -43,9 +45,32 @@ const Chapters = ({route, navigation}) => {
           customButtonStyles={{width: 80, height: 50}}
           onClick={() => onClick(uri)}
         />
-        <Download uri={uri} book={book} chapter={`chapter_${chapter}`} />
+        <Download
+          uri={uri}
+          book={book}
+          chapter={`chapter_${chapter}`}
+          type={type}
+        />
       </View>
     );
+  };
+
+  const headerComponent = () => {
+    switch (type) {
+      case SOLUTIONS:
+        return null;
+      default:
+        return listHeaderComponent;
+    }
+  };
+
+  const headerComponentStyle = () => {
+    switch (type) {
+      case SOLUTIONS:
+        return null;
+      default:
+        return headerStyle;
+    }
   };
 
   const listHeaderComponent = () => {
@@ -66,9 +91,12 @@ const Chapters = ({route, navigation}) => {
         data={chapters}
         renderItem={item => renderItem(item)}
         ItemSeparatorComponent={ItemSeparator}
-        ListHeaderComponent={listHeaderComponent}
-        ListHeaderComponentStyle={headerStyle}
+        ListHeaderComponent={headerComponent()}
+        ListHeaderComponentStyle={headerComponentStyle()}
+        ListFooterComponent={() => <View />}
+        ListFooterComponentStyle={{marginBottom: 100}}
       />
+      <Ads />
     </View>
   );
 };

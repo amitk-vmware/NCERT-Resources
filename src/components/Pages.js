@@ -37,26 +37,29 @@ const Pages = () => {
       <Stack.Screen
         name="SUBJECTS"
         component={Subjects}
-        options={{
+        options={({route}) => ({
+          title: route.params.title,
           headerStyle: {backgroundColor: headerBackgroundColor},
           headerTintColor: headerTextColor,
-        }}
+        })}
       />
       <Stack.Screen
         name="BOOKS"
         component={Books}
-        options={{
+        options={({route}) => ({
+          title: route.params.title,
           headerStyle: {backgroundColor: headerBackgroundColor},
           headerTintColor: headerTextColor,
-        }}
+        })}
       />
       <Stack.Screen
         name="CHAPTERS"
         component={Chapters}
-        options={{
+        options={({route}) => ({
+          title: route.params.title,
           headerStyle: {backgroundColor: headerBackgroundColor},
           headerTintColor: headerTextColor,
-        }}
+        })}
       />
       <Stack.Screen
         name="PDF"
