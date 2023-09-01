@@ -7,6 +7,7 @@ import ItemSeparator from '../List/ItemSeparator';
 import {Themes} from '../Theme';
 import Ads from '../Ads';
 import {SOLUTIONS, SOLUTIONS_HOST} from '../reference';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const {bodyBackgroundColor} = Themes.default;
 
@@ -22,7 +23,21 @@ const Chapters = ({route, navigation}) => {
     });
   };
 
+  const {fs} = RNFetchBlob;
+  const downloadDir = `${fs.dirs.DownloadDir}/file_${book}_`;
+
   const {container, viewStyle, headerStyle, textStyle} = styles;
+
+  const fileExists = filePath => {
+    fs.exists(filePath)
+      .then(e => {
+        // console.log(e, 'exist');
+        return e;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
 
   const renderItem = ({item}) => {
     let chapter = item + 1;
@@ -37,13 +52,17 @@ const Chapters = ({route, navigation}) => {
         }.pdf`;
     }
 
+    const filePath = `${downloadDir}chapter_${chapter}.pdf`;
+
+    const exist = fileExists(filePath);
+    console.log(fileExists(filePath), 'exist');
     return (
       <View style={viewStyle}>
         <Text style={textStyle}>{`CHAPTER ${chapter}`}</Text>
         <Button
           text="View PDF"
           customButtonStyles={{width: 80, height: 50}}
-          onClick={() => onClick(uri)}
+          onClick={() => onClick(exist ? filePath : uri)}
         />
         <Download
           uri={uri}

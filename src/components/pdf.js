@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  ActivityIndicator,
-  Text,
-} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Text} from 'react-native';
 import Pdf from 'react-native-pdf';
 import {Themes} from './Theme';
 
@@ -59,8 +53,6 @@ const styles = StyleSheet.create({
   },
   pdf: {
     flex: 1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
   },
   indicator: {flex: 1, alignItems: 'center', justifyContent: 'center'},
 });
