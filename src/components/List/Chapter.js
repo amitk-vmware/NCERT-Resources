@@ -64,7 +64,7 @@ const Chapter = ({navigation, item, data, book, type}) => {
       {exist ? (
         <Button
           text={'View PDF Offline'}
-          customButtonStyles={{ width: 180, height: 50}}
+          customButtonStyles={{width: 180, height: 50}}
           onClick={() => onClick(filePath)}
         />
       ) : (
