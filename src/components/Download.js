@@ -1,16 +1,33 @@
-import React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {Themes} from './Theme';
 import {SOLUTIONS} from './reference';
+import {unzip} from 'react-native-zip-archive';
 
 const {buttonBackgroundColor, buttonTextColor} = Themes.default;
 
-const Download = ({uri, book, chapter, text, customButtonStyle, type}) => {
+const Download = ({
+  uri,
+  book,
+  chapter,
+  text,
+  customButtonStyle,
+  type,
+  renderFlag,
+  isBook,
+}) => {
+  const [downloading, setDownloading] = useState(false);
+
   const downloadFile = () => {
-    // let FILE_URL = uri;
+    setDownloading(true);
     let file_ext = setExtension();
-    // file_ext = '.' + file_ext[0];
     const {config, fs} = RNFetchBlob;
     let RootDir = fs.dirs.DownloadDir;
 
@@ -29,8 +46,23 @@ const Download = ({uri, book, chapter, text, customButtonStyle, type}) => {
     config(options)
       .fetch('GET', uri)
       .then(res => {
-        console.log('res -> ', JSON.stringify(res));
-        alert('File Downloaded Successfully.');
+        const path = res.path();
+        renderFlag();
+        if (isBook === true) {
+          // eslint-disable-next-line no-alert
+          alert('Book Downloaded Successfully.');
+          // ================  upgrade later =================
+          // unzip(path, RootDir)
+          //   .then(result => {
+          //     console.log(result, 'result of unzip');
+          //     setDownloading(false);
+          //     res.flush();
+          //   })
+          //   .catch(err => {
+          //     console.log(`Error unzipping the file ${err}`);
+          //   });
+        }
+        setDownloading(false);
       });
   };
 
@@ -51,14 +83,21 @@ const Download = ({uri, book, chapter, text, customButtonStyle, type}) => {
     return /[.]/.exec(fileUrl) ? /[^.]+$/.exec(fileUrl) : undefined;
   };
 
-  const {button, textStyle} = styles;
+  const {button, textStyle, view} = styles;
   return (
-    <View>
-      <TouchableOpacity
-        style={[button, customButtonStyle]}
-        onPress={downloadFile}>
-        <Text style={textStyle}>{`${text ? text : 'Download'}`}</Text>
-      </TouchableOpacity>
+    <View style={view}>
+      {downloading ? (
+        <>
+          <ActivityIndicator size={25} color={buttonBackgroundColor} />
+          <Text>Downloading...</Text>
+        </>
+      ) : (
+        <TouchableOpacity
+          style={[button, customButtonStyle]}
+          onPress={downloadFile}>
+          <Text style={textStyle}>{`${text ? text : 'Download'}`}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -78,5 +117,9 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: buttonTextColor,
+  },
+  view: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
